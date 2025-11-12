@@ -1,27 +1,28 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
 require('dotenv').config();
+const sequelize = require('./config/db');
+
+const User = require('./models/User');
+const Category = require('./models/Category');
+const Product = require('./models/Product');
+const Order = require('./models/Order');
+const OrderItem = require('./models/OrderItem');
+const Cart = require('./models/Cart');
+const CartItem = require('./models/CartItem');
+const Review = require('./models/Review');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-
-// Middleware
-app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
+const PORT = process.env.PORT || 5000;
 
-// Basic route
+// Test route
 app.get('/', (req, res) => {
     res.send('Server is running');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// Sync database
+sequelize.sync({ alter: true }).then(() => {
+    console.log('Database synced');
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}).catch(err => console.log(err));
