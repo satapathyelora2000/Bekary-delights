@@ -4,8 +4,8 @@ const Cart = require('./Cart');
 const Product = require('./Product');
 
 const CartItem = sequelize.define('CartItem', {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    quantity: { type: DataTypes.INTEGER, defaultValue: 1 }
 }, { timestamps: false });
 
 CartItem.belongsTo(Cart, { foreignKey: 'cart_id', onDelete: 'CASCADE' });

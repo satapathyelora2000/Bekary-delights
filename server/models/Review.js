@@ -4,9 +4,9 @@ const User = require('./User');
 const Product = require('./Product');
 
 const Review = sequelize.define('Review', {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  rating: { type: DataTypes.TINYINT, allowNull: false },
-  comment: DataTypes.TEXT,
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    rating: { type: DataTypes.TINYINT, allowNull: false },
+    comment: DataTypes.TEXT
 }, { timestamps: true });
 
 Review.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });

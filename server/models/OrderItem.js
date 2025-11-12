@@ -4,8 +4,8 @@ const Order = require('./Order');
 const Product = require('./Product');
 
 const OrderItem = sequelize.define('OrderItem', {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    quantity: { type: DataTypes.INTEGER, defaultValue: 1 }
 }, { timestamps: false });
 
 OrderItem.belongsTo(Order, { foreignKey: 'order_id', onDelete: 'CASCADE' });

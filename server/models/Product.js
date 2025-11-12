@@ -3,11 +3,15 @@ const sequelize = require('../config/db');
 const Category = require('./Category');
 
 const Product = sequelize.define('Product', {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  name: { type: DataTypes.STRING, allowNull: false },
-  description: DataTypes.TEXT,
-  price: { type: DataTypes.DECIMAL(10,2), allowNull: false },
-  stock: { type: DataTypes.INTEGER, defaultValue: 0 },
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    name: { type: DataTypes.STRING, allowNull: false },
+    description: DataTypes.TEXT,
+    price: { type: DataTypes.DECIMAL(10,2), allowNull: false },
+    stock: { type: DataTypes.INTEGER, defaultValue: 0 },
+    image_url: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
 }, { timestamps: true });
 
 Product.belongsTo(Category, { foreignKey: 'category_id', onDelete: 'SET NULL' });
