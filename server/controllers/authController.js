@@ -47,3 +47,60 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
+// FORGOT PASSWORD
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Generate password reset token (expires in 15 minutes)
+    const resetToken = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    // Optionally: Save the token in DB (to verify later)
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = Date.now() + 15 * 60 * 1000; // 15 min expiry
+    await user.save();
+
+    // TODO: Send token via email — here we just return for testing
+    res.json({
+      message: 'Password reset link generated (valid 15 min)',
+      resetToken,
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// RESET PASSWORD
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ where: { id: decoded.id } });
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.resetToken !== token || Date.now() > user.resetTokenExpiry)
+      return res.status(400).json({ message: 'Invalid or expired reset token' });
+
+    // Update password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.resetToken = null;
+    user.resetTokenExpiry = null;
+    await user.save();
+
+    res.json({ message: 'Password reset successful' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
